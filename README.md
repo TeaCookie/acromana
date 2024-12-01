@@ -7,17 +7,11 @@ this file contains:
   
 #### 0.8 -> 1.2
 
-
-https://github.com/user-attachments/assets/6cf82ebe-aaa7-459f-9ba4-34d0ebde38bd
-
-
+https://github.com/user-attachments/assets/877806d0-98df-48b5-821f-0ee9aa820e42
 
 #### Originally proposed weightless change
 
-
-https://github.com/user-attachments/assets/33a45e47-8c64-4874-80a8-bd4ab4efe120
-
-
+https://github.com/user-attachments/assets/ba692755-3916-414d-964c-d9795912928c
 
 #### Per tick detail
 ![Per tick detail](tick_detail.png)
