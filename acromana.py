@@ -80,6 +80,8 @@ def generate_cycle():
 # for every tick in cycle, count the number of spells that hit and put the mana gained in a new list for analysis
 def old_generate_cycle():
   mana_gained = defaultdict(int)
+  for tick in range(max(cycle.keys()) + 1):  # Initialize all ticks to zero
+    mana_gained[tick] = 0
   for tick in cycle:
     mana = cycle[tick].qsize() * 0.6
     if "smoke" in cycle[tick].queue:
@@ -90,6 +92,8 @@ def old_generate_cycle():
 # the new system gives 1.2 mana per tick if a hit occurs at all.
 def new_generate_cycle():
   mana_gained = defaultdict(int)
+  for tick in range(max(cycle.keys()) + 1):  # Initialize all ticks to zero
+    mana_gained[tick] = 0
   for tick in cycle:
     mana = 1.2 if cycle[tick].qsize() > 0 else 0
     mana_gained[tick] = round(mana, 2)
@@ -218,6 +222,10 @@ def display_mana_comparison(old_mana_ticks, new_mana_ticks, tick_interval=50):
     old_total_text = ax.text(0, max(old_mana_ticks) * 1.15, 'Total: 0', ha='center', color="blue", weight="bold")
     new_total_text = ax.text(1, max(new_mana_ticks) * 1.15, 'Total: 0', ha='center', color="green", weight="bold")
 
+    # Initialize a tick counter in the center of the graph
+    tick_counter_text = ax.text(0.5, max(max(old_mana_ticks), max(new_mana_ticks)) * 0.6, 
+                                'Tick: 0', ha='center', va='center', color="purple", weight="bold", fontsize=14)
+
     # Update function for the animation
     def update(num):
         nonlocal old_total_mana, new_total_mana
@@ -242,12 +250,18 @@ def display_mana_comparison(old_mana_ticks, new_mana_ticks, tick_interval=50):
         old_total_text.set_text(f"Total: {round(old_total_mana, 2)}")
         new_total_text.set_text(f"Total: {round(new_total_mana, 2)}")
 
+        tick_counter_text.set_text(f"Tick: {num + 1}")
+
+        # Stop animation when reaching the last tick
+        if num == len(old_mana_ticks) - 1:
+          ani.event_source.stop()
+
         return old_bar, new_bar, old_mana_text, new_mana_text, old_total_text, new_total_text
 
     # Run the animation for each tick
     ani = animation.FuncAnimation(fig, update, frames=len(old_mana_ticks), interval=tick_interval)
     matplotlib.rcParams['animation.ffmpeg_path'] = "C:\\Users\\Basic\\Desktop\\hw\\winter\\ffmpeg-2024-10-24-git-153a6dc8fa-essentials_build\\bin\\ffmpeg.exe"
-    writer = animation.FFMpegWriter(fps=30)
+    writer = animation.FFMpegWriter(fps=20)
     ani.save("acrobat_weightless_buff.mp4", writer=writer) 
     plt.tight_layout()
     plt.show()
@@ -260,9 +274,9 @@ def main():
   global end
   global perfect
   perfect = False
-  end = 40
+  end = 20*30
   result = generate_cycle()
-  display_cycle_ui(result, old_mana_gained=old_generate_cycle(), new_mana_gained=new_generate_cycle())
+  # display_cycle_ui(result, old_mana_gained=old_generate_cycle(), new_mana_gained=new_generate_cycle())
   old_mana_gained = old_generate_cycle()
   new_mana_gained = new_generate_cycle()
 
@@ -271,7 +285,7 @@ def main():
   new_mana_ticks = list(new_mana_gained.values())
 
   # Call the function to display the dynamic bar graph
-  # display_mana_comparison(old_mana_ticks, new_mana_ticks, tick_interval=50)
+  display_mana_comparison(old_mana_ticks, new_mana_ticks, tick_interval=50)
   
 if __name__ == '__main__':
   main()
